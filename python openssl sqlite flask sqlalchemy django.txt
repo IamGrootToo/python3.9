@@ -1,0 +1,156 @@
+This compiles the latest python3 with the latest openssl and sqlite on an Android system running 4.2.2 in a Linux environment (Ubuntu 14.04) piggy-backed on the Android system. The Python includes an updated pip
+
+Instructions to install Flask, Flask-SQLAlchemy and Django are included at the end of these instructions.
+
+If you have problems you might need to start over with a fresh Linux environment. Sorry. Don't be alarmed. I have made a dozen Linux environments figuring this out.
+HINT: start with a fresh Linux. I have tested this on 2 clean Linux containers and had success on both. Your mileage may vary. The 2gb Linux is not big enough for this install. A minimum of 2.5 gb is 
+
+The $ at the beginning of the lines is the prompt and what follows needs to be run in Linux, do NOT type the $
+
+There are some changes we need to make to the ~/.bashrc file so open it with a text editor of your choice.
+Add the following lines to the end of the file. do not add the lines in parenthesis, they are just to explain to you what and why.
+
+If you already made changes to your .bashrc following the other instructions, delete or comment the "export" lines.
+
+ Type exactly as shown.
+
+(DO NOT ADD THIS LINE - This md() function lets you make a directory and change into it in one step. Example  md newDir  the newDir will be created and the command prompt will be moved into that dir in one step. Cool, I know)
+md() {
+    mkdir -p $1
+    cd $1
+}
+
+(Add the following in your ~/.bashrc so that when you'll compile python below, it'll find the just compiled programs:)
+
+export PATH=$HOME/.local/bin:$PATH
+export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH
+export MANPATH=$HOME/.local/share/man:$MANPATH
+export PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH
+
+If you haven't fixed the color prompt yet, now is a good time. Put the following line above or below the line that begins with PS1  should be line 117.
+PS1='$(echo -e "root@Linux:"${PWD}"#")'
+Put a # in front of the line with PS1 that was already there to comment it out. You can delete the line instead if you want.
+
+Now save the .bashrc file and exit the Linux environment and reenter Linux
+
+Hint: instead of exiting and reentering the Linux environment, you can restart the bashrc by typing:
+$ source ~/.bashrc
+
+  $ su
+Not sure what needs to be done as su. I think I did all as su.
+
+  $ pip3 uninstall flask
+
+  $ pip3 uninstall flask-sqlalchemy
+
+  $ pip3 uninstall django
+
+Create a dir to build things into:
+
+  $ mkdir /home/tmp && cd /home/tmp
+
+The following 3 files total 36+ mb, but when extracted use 351+ mb of space.
+  $ wget https://www.openssl.org/source/openssl-1.1.1k.tar.gz
+  $ wget https://sqlite.org/2021/sqlite-autoconf-3350500.tar.gz
+  $ wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tgz
+  
+These files can be downloaded from a web browser and manually placed in the /home/tmp folder with a file explorer.
+
+Compile openssl:
+
+  $ tar xf openssl-1.1.1k.tar.gz && cd openssl-1.1.1k
+  
+  $ ./config --prefix=$HOME/.local/
+  
+  $ make      (will take approx 13 minutes)
+  
+  $ make test    (will take 10+ minutes)
+When this finishes you should see "Result: PASS"  2 lines above command prompt. If not, do not pass GO. Either check for errors in your commands or start over
+
+  $ make install  (I got distracted (help me, my tablet blah, blaaah, blah), so not sure how long. It was less than 10 minutes)
+ 
+Then we need to take care of the old openssl
+  $ cd /usr/bin
+  $ mv openssl openssl.old
+
+Exit Linux and reenter Linux again or use the source ~/.bashrc  hint from above.
+
+Now we check the version of openssl
+  $ which openssl
+Should see  /opt/openssl/bin/openssl
+
+  $ openssl version
+Should see  OpenSSL 1.1.1k
+
+  $ openssl
+This will bring up a > prompt (don't type the > on the following line, just version
+  > version
+Should see open OpenSSL 1.1.1k
+
+Congratulations. You have just finished the easy part, lol. Just kidding. If you made it this far the rest will be easy 
+
+  $ su       (only if left su)
+  $ apt-get install -y build-essential
+  $ apt-get install -y checkinstall
+  $ apt-get install -y libreadline-gplv2-dev
+  $ apt-get install -y libncursesw5-dev
+  $ apt-get install -y libssl-dev
+  $ apt-get install -y libsqlite3-dev
+  $ apt-get install -y libgdbm-dev
+  $ apt-get install -y libc6-dev
+  $ apt-get install -y libbz2-dev
+  $ apt-get install -y libffi-dev
+  $ apt-get install -y zlib1g-dev
+  $ apt-get install -y wget
+The next several will take a few minutes to dl depending on your hotspot speed.
+  $ apt-get install -y tk-dev
+  $ apt-get install -y python3-dev
+  $ apt-get install -y python3-setuptools
+
+Compile sqlite3 (tcl needs to be disabled, otherwise it tries to install things in /usr; tests cannot be done, since they use tcl):
+
+  $ cd /home/tmp
+  $ tar xf /sqlite-autoconf-3350500.tar.gz && cd /sqlite-autoconf-3350500
+  $ ./sqlite-src-3350500/configure --prefix=$HOME/.local/ --disable-tcl
+  $ make
+  $ make install
+
+Compile python (tests are already performed during compile time):
+
+  $ tar xf Python-3.9.4.tgz && cd Python-3.9.4/
+  $ ./configure --prefix=$HOME/.local/ --enable-optimizations
+  $ make     (will take more than 40 minutes to complete. Be patient. It looks like it has frozen at several points. Go walk some laps or read a book (heaven forbid) Just don't be a helicopter coder)
+  
+  $ make install
+  
+  Exit su  
+(hint:  ctrl+d  or low volume button + d)
+  
+If you made it this far Congratulations. You now have a working Python3.9 and pip3. Let's check
+  $ pip3 -V
+Should see pip 20.2.3 from....
+
+  $ python3.9 -V
+Should see Python 3.9.4 .....
+
+You can alias python3 to always be python3.9
+Open the .bashrc file again and add to the end exactly as shown. 
+alias python3='python3.9'
+
+Also add the following to .bashrc
+
+export PATH="$PATH:/usr/local/bin"
+
+Save, exit Linux and reenter Linux. Try:
+  $ python3 -V
+Should be Python 3.9.4   If not, check your spelling. I had an error.
+
+Now to reinstall flask flask-sqlalchemy and django
+
+$ pip3 install flask
+
+$ pip3 install flash-sqlalchemy
+
+$ pip3 install django
+
+If everything is working, copy the downloaded files somewhere safe out of the Linux environment in case they are needed again. Then delete the /tmp folder that contains the extracted files. It is in /home
