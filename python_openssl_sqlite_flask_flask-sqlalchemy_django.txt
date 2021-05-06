@@ -3,7 +3,7 @@ This compiles the latest python3 with the latest openssl and sqlite on an Androi
 Instructions to install Flask, Flask-SQLAlchemy and Django are included at the end of these instructions.
 
 If you have problems you might need to start over with a fresh Linux environment. Sorry. Don't be alarmed. I have made a dozen Linux environments figuring this out.
-HINT: start with a fresh Linux. I have tested this on 2 clean Linux containers and had success on both. Your mileage may vary. The 2gb Linux is not big enough for this install. A minimum of 2.5 gb is 
+HINT: start with a fresh Linux. I have tested this on 2 clean Linux containers and had success on both. Your mileage may vary. The 2gb Linux is not big enough for this install. 3gb Linux environment needed.
 
 The $ at the beginning of the lines is the prompt and what follows needs to be run in Linux, do NOT type the $
 
@@ -54,7 +54,26 @@ The following 3 files total 36+ mb, but when extracted use 351+ mb of space.
   $ wget https://sqlite.org/2021/sqlite-autoconf-3350500.tar.gz
   $ wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tgz
   
-These files can be downloaded from a web browser and manually placed in the /home/tmp folder with a file explorer.
+These files can also be downloaded from a web browser and manually placed in the /home/tmp folder with a file explorer.
+
+  $ su       (only if left su)
+  $ apt-get install -y build-essential
+  $ apt-get install -y checkinstall
+  $ apt-get install -y libreadline-gplv2-dev
+  $ apt-get install -y libncursesw5-dev
+  $ apt-get install -y libssl-dev
+  $ apt-get install -y libsqlite3-dev
+  $ apt-get install -y libgdbm-dev
+  $ apt-get install -y libc6-dev
+  $ apt-get install -y libbz2-dev
+  $ apt-get install -y libffi-dev
+  $ apt-get install -y zlib1g-dev
+  $ apt-get install -y wget
+  $ apt-get install -y openssl
+The next several will take a few minutes to dl depending on your hotspot speed.
+  $ apt-get install -y tk-dev
+  $ apt-get install -y python3-dev
+  $ apt-get install -y python3-setuptools
 
 Compile openssl:
 
@@ -89,29 +108,13 @@ Should see open OpenSSL 1.1.1k
 
 Congratulations. You have just finished the easy part, lol. Just kidding. If you made it this far the rest will be easy 
 
-  $ su       (only if left su)
-  $ apt-get install -y build-essential
-  $ apt-get install -y checkinstall
-  $ apt-get install -y libreadline-gplv2-dev
-  $ apt-get install -y libncursesw5-dev
-  $ apt-get install -y libssl-dev
-  $ apt-get install -y libsqlite3-dev
-  $ apt-get install -y libgdbm-dev
-  $ apt-get install -y libc6-dev
-  $ apt-get install -y libbz2-dev
-  $ apt-get install -y libffi-dev
-  $ apt-get install -y zlib1g-dev
-  $ apt-get install -y wget
-The next several will take a few minutes to dl depending on your hotspot speed.
-  $ apt-get install -y tk-dev
-  $ apt-get install -y python3-dev
-  $ apt-get install -y python3-setuptools
+
 
 Compile sqlite3 (tcl needs to be disabled, otherwise it tries to install things in /usr; tests cannot be done, since they use tcl):
 
   $ cd /home/tmp
-  $ tar xf /sqlite-autoconf-3350500.tar.gz && cd /sqlite-autoconf-3350500
-  $ ./sqlite-src-3220000/configure --prefix=$HOME/.local/ --disable-tcl
+  $ tar xf sqlite-autoconf-3350500.tar.gz && cd sqlite-autoconf-3350500
+  $ ./configure --prefix=$HOME/.local/ --disable-tcl
   $ make
   $ make install
 
