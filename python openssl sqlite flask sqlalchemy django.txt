@@ -110,8 +110,8 @@ The next several will take a few minutes to dl depending on your hotspot speed.
 Compile sqlite3 (tcl needs to be disabled, otherwise it tries to install things in /usr; tests cannot be done, since they use tcl):
 
   $ cd /home/tmp
-  $ tar xf /sqlite-autoconf-3350500.tar.gz && cd /sqlite-autoconf-3350500
-  $ ./sqlite-src-3350500/configure --prefix=$HOME/.local/ --disable-tcl
+  $ tar xf sqlite-autoconf-3350500.tar.gz && cd sqlite-autoconf-3350500
+  $ ./configure --prefix=$HOME/.local/ --disable-tcl
   $ make
   $ make install
 
